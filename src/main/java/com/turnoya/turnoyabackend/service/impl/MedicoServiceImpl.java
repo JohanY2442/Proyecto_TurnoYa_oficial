@@ -35,11 +35,11 @@ public class MedicoServiceImpl implements MedicoService {
     private final ApplicationEventPublisher eventPublisher;
 
     public MedicoServiceImpl(PersonalSaludRepository personalSaludRepository,
-                             UsuarioRepository usuarioRepository,
-                             EspecialidadRepository especialidadRepository,
-                             PasswordEncoder passwordEncoder,
-                             MedicoMapper medicoMapper,
-                             ApplicationEventPublisher eventPublisher) {
+            UsuarioRepository usuarioRepository,
+            EspecialidadRepository especialidadRepository,
+            PasswordEncoder passwordEncoder,
+            MedicoMapper medicoMapper,
+            ApplicationEventPublisher eventPublisher) {
         this.personalSaludRepository = personalSaludRepository;
         this.usuarioRepository = usuarioRepository;
         this.especialidadRepository = especialidadRepository;

@@ -29,8 +29,8 @@ public class CentroSaludServiceImpl implements CentroSaludService {
     private final CentroSaludMapper centroSaludMapper;
 
     public CentroSaludServiceImpl(CentroSaludRepository centroSaludRepository,
-                                  EspecialidadRepository especialidadRepository,
-                                  CentroSaludMapper centroSaludMapper) {
+            EspecialidadRepository especialidadRepository,
+            CentroSaludMapper centroSaludMapper) {
         this.centroSaludRepository = centroSaludRepository;
         this.especialidadRepository = especialidadRepository;
         this.centroSaludMapper = centroSaludMapper;
@@ -85,7 +85,7 @@ public class CentroSaludServiceImpl implements CentroSaludService {
 
     @Override
     public List<CentroCercanoResponse> buscarCercanos(double latitud, double longitud, Long especialidadId,
-                                                      double radioKm) {
+            double radioKm) {
         return buscarCentros(especialidadId).stream()
                 .map(centro -> centroSaludMapper.toCercanoResponse(centro,
                         calcularDistanciaKm(latitud, longitud, centro.getLatitud(), centro.getLongitud())))

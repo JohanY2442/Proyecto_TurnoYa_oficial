@@ -58,7 +58,7 @@ public class CentroSaludController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CentroSaludResponse> actualizar(@PathVariable("id") Long id,
-                                                          @Valid @RequestBody CentroSaludRequest request) {
+            @Valid @RequestBody CentroSaludRequest request) {
         return ResponseEntity.ok(centroSaludService.actualizar(id, request));
     }
 
@@ -72,7 +72,7 @@ public class CentroSaludController {
     @PostMapping("/{id}/especialidades/{especialidadId}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CentroSaludResponse> agregarEspecialidad(@PathVariable("id") Long id,
-                                                                   @PathVariable("especialidadId") Long especialidadId) {
+            @PathVariable("especialidadId") Long especialidadId) {
         return ResponseEntity.ok(centroSaludService.agregarEspecialidad(id, especialidadId));
     }
 }

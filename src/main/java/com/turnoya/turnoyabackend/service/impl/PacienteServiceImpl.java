@@ -23,8 +23,8 @@ public class PacienteServiceImpl implements PacienteService {
     private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public PacienteServiceImpl(PacienteRepository pacienteRepository,
-                               PacienteMapper pacienteMapper,
-                               UsuarioAutenticadoService usuarioAutenticadoService) {
+            PacienteMapper pacienteMapper,
+            UsuarioAutenticadoService usuarioAutenticadoService) {
         this.pacienteRepository = pacienteRepository;
         this.pacienteMapper = pacienteMapper;
         this.usuarioAutenticadoService = usuarioAutenticadoService;

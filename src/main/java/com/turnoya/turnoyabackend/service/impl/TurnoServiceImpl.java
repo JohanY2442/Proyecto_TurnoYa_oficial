@@ -44,11 +44,11 @@ public class TurnoServiceImpl implements TurnoService {
     private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public TurnoServiceImpl(TurnoRepository turnoRepository,
-                            CentroSaludRepository centroSaludRepository,
-                            EspecialidadRepository especialidadRepository,
-                            TurnoMapper turnoMapper,
-                            TurnoEventPublisher turnoEventPublisher,
-                            UsuarioAutenticadoService usuarioAutenticadoService) {
+            CentroSaludRepository centroSaludRepository,
+            EspecialidadRepository especialidadRepository,
+            TurnoMapper turnoMapper,
+            TurnoEventPublisher turnoEventPublisher,
+            UsuarioAutenticadoService usuarioAutenticadoService) {
         this.turnoRepository = turnoRepository;
         this.centroSaludRepository = centroSaludRepository;
         this.especialidadRepository = especialidadRepository;

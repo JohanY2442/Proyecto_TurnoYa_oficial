@@ -1,5 +1,4 @@
 package com.turnoya.turnoyabackend.repository;
-
 import com.turnoya.turnoyabackend.entity.Notificacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 

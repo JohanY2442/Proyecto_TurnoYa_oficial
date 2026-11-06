@@ -64,7 +64,7 @@ public class TurnoController {
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasAnyRole('MEDICO', 'ADMINISTRADOR')")
     public ResponseEntity<TurnoResponse> cambiarEstado(@PathVariable("id") Long id,
-                                                       @Valid @RequestBody TurnoEstadoUpdateRequest request) {
+            @Valid @RequestBody TurnoEstadoUpdateRequest request) {
         return ResponseEntity.ok(turnoService.cambiarEstado(id, request));
     }
 }
