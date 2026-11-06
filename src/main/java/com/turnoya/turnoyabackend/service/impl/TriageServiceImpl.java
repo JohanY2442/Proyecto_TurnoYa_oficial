@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service.impl;
 
+import com.turnoya.turnoyabackend.dto.triage.SintomaResponse;
 import com.turnoya.turnoyabackend.dto.triage.TriageRequest;
 import com.turnoya.turnoyabackend.dto.triage.TriageResponse;
 import com.turnoya.turnoyabackend.entity.EstadoTurno;
@@ -20,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +86,21 @@ public class TriageServiceImpl implements TriageService {
         Triage triage = triageRepository.findByTurnoId(turnoId)
                 .orElseThrow(() -> new ResourceNotFoundException("El turno " + turnoId + " aún no tiene triage"));
         return triageMapper.toResponse(triage);
+    }
+
+    @Override
+    public List<SintomaResponse> listarSintomas() {
+        return Arrays.stream(Sintoma.values())
+                .map(s -> new SintomaResponse(s.name(), formatearEtiqueta(s), s.getGravedad()))
+                .toList();
+    }
+
+    /**
+     * Convierte DOLOR_PECHO en "Dolor pecho" para mostrarlo en el frontend.
+     */
+    private String formatearEtiqueta(Sintoma sintoma) {
+        String texto = sintoma.name().replace('_', ' ').toLowerCase();
+        return Character.toUpperCase(texto.charAt(0)) + texto.substring(1);
     }
 
     private Turno buscarTurno(Long turnoId) {
