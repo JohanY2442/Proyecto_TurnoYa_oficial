@@ -20,6 +20,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String PREFIJO_BEARER = "Bearer ";
+    private static final String SUFIJO_STREAM = "/cola/stream";
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -31,18 +32,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+            FilterChain filterChain) throws ServletException, IOException {
+        String token = extraerToken(request);
 
-        if (header != null && header.startsWith(PREFIJO_BEARER)
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String token = header.substring(PREFIJO_BEARER.length());
-            if (jwtService.esAccessTokenValido(token)) {
-                autenticar(token, request);
-            }
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtService.esAccessTokenValido(token)) {
+            autenticar(token, request);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * El token viaja en el header Authorization. Solo para la cola en tiempo
+     * real (SSE) se acepta también el parámetro {@code token}, porque
+     * EventSource del navegador no puede enviar headers.
+     */
+    private String extraerToken(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith(PREFIJO_BEARER)) {
+            return header.substring(PREFIJO_BEARER.length());
+        }
+        if (request.getRequestURI().endsWith(SUFIJO_STREAM)) {
+            return request.getParameter("token");
+        }
+        return null;
     }
 
     private void autenticar(String token, HttpServletRequest request) {

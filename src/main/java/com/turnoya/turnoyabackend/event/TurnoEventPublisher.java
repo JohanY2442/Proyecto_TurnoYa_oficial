@@ -25,7 +25,9 @@ public class TurnoEventPublisher {
                 turno.getCentroSalud().getNombre(),
                 turno.getFechaHora(),
                 turno.getEstado().name(),
-                tipoEvento
+                tipoEvento,
+                turno.getCentroSalud().getId(),
+                turno.getEspecialidad().getId()
         ));
     }
 }
