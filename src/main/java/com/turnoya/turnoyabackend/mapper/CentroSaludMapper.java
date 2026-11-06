@@ -43,6 +43,7 @@ public class CentroSaludMapper {
 
     public CentroCercanoResponse toCercanoResponse(CentroSalud centro, double distanciaKm) {
         double redondeada = Math.round(distanciaKm * 100.0) / 100.0;
-        return new CentroCercanoResponse(centro.getId(), centro.getNombre(), centro.getDireccion(), redondeada);
+        return new CentroCercanoResponse(centro.getId(), centro.getNombre(), centro.getDireccion(),
+                centro.getLatitud(), centro.getLongitud(), redondeada);
     }
 }
