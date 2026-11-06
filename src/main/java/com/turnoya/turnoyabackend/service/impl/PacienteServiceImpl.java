@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service.impl;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteUpdateRequest;
 import com.turnoya.turnoyabackend.entity.Paciente;
@@ -9,6 +10,8 @@ import com.turnoya.turnoyabackend.mapper.PacienteMapper;
 import com.turnoya.turnoyabackend.repository.PacienteRepository;
 import com.turnoya.turnoyabackend.security.UsuarioAutenticadoService;
 import com.turnoya.turnoyabackend.service.PacienteService;
+import com.turnoya.turnoyabackend.util.Paginacion;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +53,9 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public List<PacienteResponse> listar() {
-        return pacienteRepository.findAll().stream()
-                .map(pacienteMapper::toResponse)
-                .toList();
+    public PageResponse<PacienteResponse> listar(int page, int size) {
+        return PageResponse.of(pacienteRepository.findAll(Paginacion.crear(page, size, Sort.by("id")))
+                .map(pacienteMapper::toResponse));
     }
 
     @Override

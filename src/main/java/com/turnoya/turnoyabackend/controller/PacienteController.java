@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.controller;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteUpdateRequest;
 import com.turnoya.turnoyabackend.service.PacienteService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,8 +41,10 @@ public class PacienteController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'MEDICO')")
-    public ResponseEntity<List<PacienteResponse>> listar() {
-        return ResponseEntity.ok(pacienteService.listar());
+    public ResponseEntity<PageResponse<PacienteResponse>> listar(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(pacienteService.listar(page, size));
     }
 
     @GetMapping("/{id}")

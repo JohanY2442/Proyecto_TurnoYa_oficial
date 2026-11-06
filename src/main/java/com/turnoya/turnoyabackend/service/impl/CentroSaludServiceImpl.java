@@ -3,6 +3,7 @@ package com.turnoya.turnoyabackend.service.impl;
 import com.turnoya.turnoyabackend.dto.centro.CentroCercanoResponse;
 import com.turnoya.turnoyabackend.dto.centro.CentroSaludRequest;
 import com.turnoya.turnoyabackend.dto.centro.CentroSaludResponse;
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.entity.CentroSalud;
 import com.turnoya.turnoyabackend.entity.Especialidad;
 import com.turnoya.turnoyabackend.exception.ResourceNotFoundException;
@@ -10,6 +11,10 @@ import com.turnoya.turnoyabackend.mapper.CentroSaludMapper;
 import com.turnoya.turnoyabackend.repository.CentroSaludRepository;
 import com.turnoya.turnoyabackend.repository.EspecialidadRepository;
 import com.turnoya.turnoyabackend.service.CentroSaludService;
+import com.turnoya.turnoyabackend.util.Paginacion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,10 +50,13 @@ public class CentroSaludServiceImpl implements CentroSaludService {
     }
 
     @Override
-    public List<CentroSaludResponse> listar(Long especialidadId) {
-        return buscarCentros(especialidadId).stream()
-                .map(centroSaludMapper::toResponse)
-                .toList();
+    public PageResponse<CentroSaludResponse> listar(Long especialidadId, String search, int page, int size) {
+        PageRequest pageRequest = Paginacion.crear(page, size, Sort.by("nombre"));
+        String texto = search == null ? "" : search.trim();
+        Page<CentroSalud> centros = especialidadId == null
+                ? centroSaludRepository.findByNombreContainingIgnoreCase(texto, pageRequest)
+                : centroSaludRepository.findByEspecialidadesIdAndNombreContainingIgnoreCase(especialidadId, texto, pageRequest);
+        return PageResponse.of(centros.map(centroSaludMapper::toResponse));
     }
 
     @Override
