@@ -13,4 +13,5 @@ public interface TriageService {
     TriageResponse obtenerPorTurno(Long turnoId);
 
     List<SintomaResponse> listarSintomas();
+
 }
