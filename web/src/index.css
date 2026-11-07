@@ -1,0 +1,152 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tokens de TurnoYa. Los colores de urgencia siguen la escala de triage
+ * (verde, ámbar, naranja, rojo) y se usan siempre con el mismo significado.
+ */
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --surface-2: #e8efed;
+  --ink: #14302b;
+  --ink-soft: #4c6460;
+  --line: #d3dedb;
+  --brand: #0b6e5f;
+  --brand-strong: #08594d;
+  --brand-ink: #ffffff;
+  --brand-soft: #dcefea;
+  --sun: #f2c14e;
+  --danger: #b42318;
+  --u-bajo: #2f8f4e;
+  --u-medio: #d6a50f;
+  --u-alto: #d2541a;
+  --u-critico: #9e1c1c;
+}
+
+.dark {
+  --bg: #0f1c19;
+  --surface: #15241f;
+  --surface-2: #1c2f2a;
+  --ink: #e4eeeb;
+  --ink-soft: #9db3ae;
+  --line: #2a3d38;
+  --brand: #3fb59f;
+  --brand-strong: #5cc9b4;
+  --brand-ink: #06201b;
+  --brand-soft: #183a33;
+  --danger: #f97066;
+  --u-bajo: #3a9d5c;
+  --u-medio: #d2a020;
+  --u-alto: #d8652e;
+  --u-critico: #c23a36;
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-sun: var(--sun);
+  --color-danger: var(--danger);
+  --color-u-bajo: var(--u-bajo);
+  --color-u-medio: var(--u-medio);
+  --color-u-alto: var(--u-alto);
+  --color-u-critico: var(--u-critico);
+
+  --font-sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Atkinson Hyperlegible', sans-serif;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Ticket de turno: muescas laterales como un ticket de la posta */
+.ticket {
+  --notch: 14px;
+  mask:
+    radial-gradient(circle var(--notch) at 0 62%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% 62%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+
+.ticket-cut {
+  background-image: linear-gradient(to right, var(--line) 50%, transparent 0);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  height: 2px;
+}
+
+@keyframes ticket-in {
+  from {
+    transform: translateY(12px) rotate(-1.5deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.ticket-enter {
+  animation: ticket-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.live-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+  border-radius: 14px;
+  z-index: 0;
+}
