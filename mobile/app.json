@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "TurnoYa",
+    "slug": "turnoya-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "turnoya",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B6E5F"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "pe.edu.utec.turnoya"
+    },
+    "android": {
+      "package": "pe.edu.utec.turnoya",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B6E5F",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "TurnoYa usa tu ubicación para mostrarte los centros de salud más cercanos."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "TurnoYa usa la cámara para escanear el código QR del turno del paciente.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0B6E5F"
+        }
+      ]
+    ]
+  }
+}
