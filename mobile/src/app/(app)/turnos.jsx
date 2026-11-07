@@ -24,21 +24,21 @@ export default function TurnosScreen() {
   const [error, setError] = useState(null);
 
   const cargar = useCallback(
-    async (page, modo) => {
-      setError(null);
-      try {
-        const data = await turnoService.misTurnos({ page, size: SIZE, estado });
-        setItems((prev) => (page === 0 ? data.content : [...prev, ...data.content]));
-        setPagina({ page: data.page, last: data.last, totalElements: data.totalElements });
-      } catch (err) {
-        setError(getErrorMessage(err));
-      } finally {
-        if (modo === 'inicial') setLoading(false);
-        if (modo === 'mas') setCargandoMas(false);
-        if (modo === 'refresh') setRefreshing(false);
-      }
-    },
-    [estado],
+      async (page, modo) => {
+        setError(null);
+        try {
+          const data = await turnoService.misTurnos({ page, size: SIZE, estado });
+          setItems((prev) => (page === 0 ? data.content : [...prev, ...data.content]));
+          setPagina({ page: data.page, last: data.last, totalElements: data.totalElements });
+        } catch (err) {
+          setError(getErrorMessage(err));
+        } finally {
+          if (modo === 'inicial') setLoading(false);
+          if (modo === 'mas') setCargandoMas(false);
+          if (modo === 'refresh') setRefreshing(false);
+        }
+      },
+      [estado],
   );
 
   useEffect(() => {
@@ -53,50 +53,50 @@ export default function TurnosScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtros} style={{ flexGrow: 0 }}>
-        {FILTROS.map(([valor, label]) => (
-          <Chip key={valor || 'todos'} label={label} selected={estado === valor} onPress={() => setEstado(valor)} />
-        ))}
-      </ScrollView>
-      {loading ? (
-        <LoadingView />
-      ) : (
-        <FlatList
-          data={items}
-          keyExtractor={(t) => String(t.id)}
-          contentContainerStyle={{ padding: 16, gap: 10 }}
-          renderItem={({ item }) => <TurnoItem turno={item} onPress={() => router.push(`/turno/${item.id}`)} />}
-          onEndReached={cargarMas}
-          onEndReachedThreshold={0.4}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              tintColor={colors.brand}
-              onRefresh={() => {
-                setRefreshing(true);
-                cargar(0, 'refresh');
-              }}
+      <View style={{ flex: 1 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtros} style={{ flexGrow: 0 }}>
+          {FILTROS.map(([valor, label]) => (
+              <Chip key={valor || 'todos'} label={label} selected={estado === valor} onPress={() => setEstado(valor)} />
+          ))}
+        </ScrollView>
+        {loading ? (
+            <LoadingView />
+        ) : (
+            <FlatList
+                data={items}
+                keyExtractor={(t) => String(t.id)}
+                contentContainerStyle={{ padding: 16, gap: 10 }}
+                renderItem={({ item }) => <TurnoItem turno={item} onPress={() => router.push(`/turno/${item.id}`)} />}
+                onEndReached={cargarMas}
+                onEndReachedThreshold={0.4}
+                refreshControl={
+                  <RefreshControl
+                      refreshing={refreshing}
+                      tintColor={colors.brand}
+                      onRefresh={() => {
+                        setRefreshing(true);
+                        cargar(0, 'refresh');
+                      }}
+                  />
+                }
+                ListHeaderComponent={items.length ? <Text style={styles.total}>{pagina.totalElements} turnos</Text> : null}
+                ListFooterComponent={cargandoMas ? <ActivityIndicator color={colors.brand} style={{ margin: 16 }} /> : null}
+                ListEmptyComponent={
+                  error ? (
+                      <ErrorView message={error} onRetry={() => cargar(0, 'inicial')} />
+                  ) : (
+                      <EmptyState
+                          icon="ticket-outline"
+                          title={estado ? 'No tienes turnos en este estado' : 'Aún no tienes turnos'}
+                          message={estado ? undefined : 'Busca un centro cerca de ti y reserva en un minuto.'}
+                          actionLabel={estado ? 'Ver todos' : 'Buscar un centro'}
+                          onAction={() => (estado ? setEstado('') : router.push('/inicio'))}
+                      />
+                  )
+                }
             />
-          }
-          ListHeaderComponent={items.length ? <Text style={styles.total}>{pagina.totalElements} turnos</Text> : null}
-          ListFooterComponent={cargandoMas ? <ActivityIndicator color={colors.brand} style={{ margin: 16 }} /> : null}
-          ListEmptyComponent={
-            error ? (
-              <ErrorView message={error} onRetry={() => cargar(0, 'inicial')} />
-            ) : (
-              <EmptyState
-                icon="ticket-outline"
-                title={estado ? 'No tienes turnos en este estado' : 'Aún no tienes turnos'}
-                message={estado ? undefined : 'Busca un centro cerca de ti y reserva en un minuto.'}
-                actionLabel={estado ? 'Ver todos' : 'Buscar un centro'}
-                onAction={() => (estado ? setEstado('') : router.push('/inicio'))}
-              />
-            )
-          }
-        />
-      )}
-    </View>
+        )}
+      </View>
   );
 }
 
