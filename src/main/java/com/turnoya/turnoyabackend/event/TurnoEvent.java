@@ -39,10 +39,23 @@ public class TurnoEvent {
     private final LocalDateTime fechaHora;
     private final String estado;
     private final TipoEventoTurno tipoEvento;
+    private final Long centroId;
+    private final Long especialidadId;
 
     public TurnoEvent(Long turnoId, Long usuarioId, String numeroTurno, String especialidad,
-                       String establecimiento, LocalDateTime fechaHora, String estado,
-                       TipoEventoTurno tipoEvento) {
+            String establecimiento, LocalDateTime fechaHora, String estado,
+            TipoEventoTurno tipoEvento) {
+        this(turnoId, usuarioId, numeroTurno, especialidad, establecimiento, fechaHora, estado, tipoEvento,
+                null, null);
+    }
+
+    /**
+     * Incluye los ids del centro y la especialidad para que la cola en tiempo
+     * real sepa a qué suscriptores avisar.
+     */
+    public TurnoEvent(Long turnoId, Long usuarioId, String numeroTurno, String especialidad,
+            String establecimiento, LocalDateTime fechaHora, String estado,
+            TipoEventoTurno tipoEvento, Long centroId, Long especialidadId) {
         this.turnoId = turnoId;
         this.usuarioId = usuarioId;
         this.numeroTurno = numeroTurno;
@@ -51,6 +64,16 @@ public class TurnoEvent {
         this.fechaHora = fechaHora;
         this.estado = estado;
         this.tipoEvento = tipoEvento;
+        this.centroId = centroId;
+        this.especialidadId = especialidadId;
+    }
+
+    public Long getCentroId() {
+        return centroId;
+    }
+
+    public Long getEspecialidadId() {
+        return especialidadId;
     }
 
     public Long getTurnoId() {

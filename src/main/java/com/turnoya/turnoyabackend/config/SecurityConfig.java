@@ -1,6 +1,7 @@
 package com.turnoya.turnoyabackend.config;
 
 import com.turnoya.turnoyabackend.security.JwtAuthenticationFilter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,7 @@ public class SecurityConfig {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
@@ -45,10 +46,12 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
                         .requestMatchers("/api/v1/auth/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/centros", "/api/v1/centros/*",
-                                "/api/v1/especialidades", "/api/v1/especialidades/*").permitAll()
+                                "/api/v1/especialidades", "/api/v1/especialidades/*",
+                                "/api/v1/triage/sintomas").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->

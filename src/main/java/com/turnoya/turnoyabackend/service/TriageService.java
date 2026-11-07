@@ -5,6 +5,7 @@ import com.turnoya.turnoyabackend.dto.triage.TriageRequest;
 import com.turnoya.turnoyabackend.dto.triage.TriageResponse;
 
 import java.util.List;
+
 public interface TriageService {
 
     TriageResponse registrar(Long turnoId, TriageRequest request);
@@ -12,4 +13,5 @@ public interface TriageService {
     TriageResponse obtenerPorTurno(Long turnoId);
 
     List<SintomaResponse> listarSintomas();
+
 }

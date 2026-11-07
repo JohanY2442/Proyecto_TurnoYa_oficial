@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service.impl;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.turno.TurnoCreateRequest;
 import com.turnoya.turnoyabackend.dto.turno.TurnoEstadoUpdateRequest;
 import com.turnoya.turnoyabackend.dto.turno.TurnoResponse;
@@ -7,6 +8,7 @@ import com.turnoya.turnoyabackend.entity.CentroSalud;
 import com.turnoya.turnoyabackend.entity.Especialidad;
 import com.turnoya.turnoyabackend.entity.EstadoTurno;
 import com.turnoya.turnoyabackend.entity.Paciente;
+import com.turnoya.turnoyabackend.entity.PersonalSalud;
 import com.turnoya.turnoyabackend.entity.RolUsuario;
 import com.turnoya.turnoyabackend.entity.Turno;
 import com.turnoya.turnoyabackend.event.TipoEventoTurno;
@@ -21,6 +23,10 @@ import com.turnoya.turnoyabackend.repository.EspecialidadRepository;
 import com.turnoya.turnoyabackend.repository.TurnoRepository;
 import com.turnoya.turnoyabackend.security.UsuarioAutenticadoService;
 import com.turnoya.turnoyabackend.service.TurnoService;
+import com.turnoya.turnoyabackend.util.Paginacion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +50,11 @@ public class TurnoServiceImpl implements TurnoService {
     private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public TurnoServiceImpl(TurnoRepository turnoRepository,
-                            CentroSaludRepository centroSaludRepository,
-                            EspecialidadRepository especialidadRepository,
-                            TurnoMapper turnoMapper,
-                            TurnoEventPublisher turnoEventPublisher,
-                            UsuarioAutenticadoService usuarioAutenticadoService) {
+            CentroSaludRepository centroSaludRepository,
+            EspecialidadRepository especialidadRepository,
+            TurnoMapper turnoMapper,
+            TurnoEventPublisher turnoEventPublisher,
+            UsuarioAutenticadoService usuarioAutenticadoService) {
         this.turnoRepository = turnoRepository;
         this.centroSaludRepository = centroSaludRepository;
         this.especialidadRepository = especialidadRepository;
@@ -85,9 +91,20 @@ public class TurnoServiceImpl implements TurnoService {
     }
 
     @Override
-    public List<TurnoResponse> listarMisTurnos() {
+    public PageResponse<TurnoResponse> listarMisTurnos(EstadoTurno estado, int page, int size) {
         Paciente paciente = usuarioAutenticadoService.obtenerPaciente();
-        return turnoRepository.findByPacienteIdOrderByFechaHoraDesc(paciente.getId()).stream()
+        PageRequest pageRequest = Paginacion.crear(page, size, Sort.by(Sort.Direction.DESC, "fechaHora"));
+        Page<Turno> turnos = estado == null
+                ? turnoRepository.findByPacienteId(paciente.getId(), pageRequest)
+                : turnoRepository.findByPacienteIdAndEstado(paciente.getId(), estado, pageRequest);
+        return PageResponse.of(turnos.map(turnoMapper::toResponse));
+    }
+
+    @Override
+    public List<TurnoResponse> listarEnAtencionDelMedico() {
+        PersonalSalud medico = usuarioAutenticadoService.obtenerMedico();
+        return turnoRepository.findByMedicoIdAndEstadoOrderByFechaHoraAsc(medico.getId(), EstadoTurno.EN_ATENCION)
+                .stream()
                 .map(turnoMapper::toResponse)
                 .toList();
     }

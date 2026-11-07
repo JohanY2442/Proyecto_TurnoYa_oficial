@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.medico.MedicoCreateRequest;
 import com.turnoya.turnoyabackend.dto.medico.MedicoResponse;
 
@@ -9,7 +10,9 @@ public interface MedicoService {
 
     MedicoResponse crear(MedicoCreateRequest request);
 
-    List<MedicoResponse> listar(Long especialidadId);
+    PageResponse<MedicoResponse> listar(Long especialidadId, int page, int size);
 
     MedicoResponse obtenerPorId(Long id);
+
+    MedicoResponse obtenerMiPerfil();
 }

@@ -3,6 +3,7 @@ package com.turnoya.turnoyabackend.service;
 import com.turnoya.turnoyabackend.dto.centro.CentroCercanoResponse;
 import com.turnoya.turnoyabackend.dto.centro.CentroSaludRequest;
 import com.turnoya.turnoyabackend.dto.centro.CentroSaludResponse;
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface CentroSaludService {
 
     CentroSaludResponse crear(CentroSaludRequest request);
 
-    List<CentroSaludResponse> listar(Long especialidadId);
+    PageResponse<CentroSaludResponse> listar(Long especialidadId, String search, int page, int size);
 
     CentroSaludResponse obtenerPorId(Long id);
 

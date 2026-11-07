@@ -37,11 +37,11 @@ public class TriageServiceImpl implements TriageService {
     private final ApplicationEventPublisher eventPublisher;
 
     public TriageServiceImpl(TriageRepository triageRepository,
-                             TurnoRepository turnoRepository,
-                             TriageMapper triageMapper,
-                             CalculadoraUrgencia calculadoraUrgencia,
-                             UsuarioAutenticadoService usuarioAutenticadoService,
-                             ApplicationEventPublisher eventPublisher) {
+            TurnoRepository turnoRepository,
+            TriageMapper triageMapper,
+            CalculadoraUrgencia calculadoraUrgencia,
+            UsuarioAutenticadoService usuarioAutenticadoService,
+            ApplicationEventPublisher eventPublisher) {
         this.triageRepository = triageRepository;
         this.turnoRepository = turnoRepository;
         this.triageMapper = triageMapper;

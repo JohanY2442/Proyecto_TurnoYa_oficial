@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteResponse;
 import com.turnoya.turnoyabackend.dto.paciente.PacienteUpdateRequest;
 
@@ -11,7 +12,7 @@ public interface PacienteService {
 
     PacienteResponse actualizarMiPerfil(PacienteUpdateRequest request);
 
-    List<PacienteResponse> listar();
+    PageResponse<PacienteResponse> listar(int page, int size);
 
     PacienteResponse obtenerPorId(Long id);
 }

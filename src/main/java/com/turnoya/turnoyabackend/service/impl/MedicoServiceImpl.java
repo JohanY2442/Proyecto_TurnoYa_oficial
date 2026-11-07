@@ -1,5 +1,6 @@
 package com.turnoya.turnoyabackend.service.impl;
 
+import com.turnoya.turnoyabackend.dto.common.PageResponse;
 import com.turnoya.turnoyabackend.dto.medico.MedicoCreateRequest;
 import com.turnoya.turnoyabackend.dto.medico.MedicoResponse;
 import com.turnoya.turnoyabackend.entity.Especialidad;
@@ -13,8 +14,13 @@ import com.turnoya.turnoyabackend.mapper.MedicoMapper;
 import com.turnoya.turnoyabackend.repository.EspecialidadRepository;
 import com.turnoya.turnoyabackend.repository.PersonalSaludRepository;
 import com.turnoya.turnoyabackend.repository.UsuarioRepository;
+import com.turnoya.turnoyabackend.security.UsuarioAutenticadoService;
 import com.turnoya.turnoyabackend.service.MedicoService;
+import com.turnoya.turnoyabackend.util.Paginacion;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,19 +39,22 @@ public class MedicoServiceImpl implements MedicoService {
     private final PasswordEncoder passwordEncoder;
     private final MedicoMapper medicoMapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public MedicoServiceImpl(PersonalSaludRepository personalSaludRepository,
-                             UsuarioRepository usuarioRepository,
-                             EspecialidadRepository especialidadRepository,
-                             PasswordEncoder passwordEncoder,
-                             MedicoMapper medicoMapper,
-                             ApplicationEventPublisher eventPublisher) {
+            UsuarioRepository usuarioRepository,
+            EspecialidadRepository especialidadRepository,
+            PasswordEncoder passwordEncoder,
+            MedicoMapper medicoMapper,
+            ApplicationEventPublisher eventPublisher,
+            UsuarioAutenticadoService usuarioAutenticadoService) {
         this.personalSaludRepository = personalSaludRepository;
         this.usuarioRepository = usuarioRepository;
         this.especialidadRepository = especialidadRepository;
         this.passwordEncoder = passwordEncoder;
         this.medicoMapper = medicoMapper;
         this.eventPublisher = eventPublisher;
+        this.usuarioAutenticadoService = usuarioAutenticadoService;
     }
 
     @Override
@@ -73,13 +82,12 @@ public class MedicoServiceImpl implements MedicoService {
     }
 
     @Override
-    public List<MedicoResponse> listar(Long especialidadId) {
-        List<PersonalSalud> medicos = especialidadId == null
-                ? personalSaludRepository.findAll()
-                : personalSaludRepository.findByEspecialidadesId(especialidadId);
-        return medicos.stream()
-                .map(medicoMapper::toResponse)
-                .toList();
+    public PageResponse<MedicoResponse> listar(Long especialidadId, int page, int size) {
+        PageRequest pageRequest = Paginacion.crear(page, size, Sort.by("id"));
+        Page<PersonalSalud> medicos = especialidadId == null
+                ? personalSaludRepository.findAll(pageRequest)
+                : personalSaludRepository.findByEspecialidadesId(especialidadId, pageRequest);
+        return PageResponse.of(medicos.map(medicoMapper::toResponse));
     }
 
     @Override
@@ -87,6 +95,11 @@ public class MedicoServiceImpl implements MedicoService {
         PersonalSalud medico = personalSaludRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el médico con id " + id));
         return medicoMapper.toResponse(medico);
+    }
+
+    @Override
+    public MedicoResponse obtenerMiPerfil() {
+        return medicoMapper.toResponse(usuarioAutenticadoService.obtenerMedico());
     }
 
     private void validarDatosUnicos(MedicoCreateRequest request) {

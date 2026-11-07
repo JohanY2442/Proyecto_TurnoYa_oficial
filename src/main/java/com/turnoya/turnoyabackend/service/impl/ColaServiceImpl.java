@@ -38,10 +38,10 @@ public class ColaServiceImpl implements ColaService {
     private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public ColaServiceImpl(TurnoRepository turnoRepository,
-                           CentroSaludRepository centroSaludRepository,
-                           TurnoMapper turnoMapper,
-                           TurnoEventPublisher turnoEventPublisher,
-                           UsuarioAutenticadoService usuarioAutenticadoService) {
+            CentroSaludRepository centroSaludRepository,
+            TurnoMapper turnoMapper,
+            TurnoEventPublisher turnoEventPublisher,
+            UsuarioAutenticadoService usuarioAutenticadoService) {
         this.turnoRepository = turnoRepository;
         this.centroSaludRepository = centroSaludRepository;
         this.turnoMapper = turnoMapper;
