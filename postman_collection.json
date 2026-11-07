@@ -939,7 +939,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/centros?especialidadId=1",
+              "raw": "{{baseUrl}}/api/v1/centros?page=0&size=10&search=&especialidadId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -950,13 +950,24 @@
               ],
               "query": [
                 {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
                   "key": "especialidadId",
-                  "value": "1",
-                  "description": "Opcional: solo centros que atienden esta especialidad"
+                  "value": ""
                 }
               ]
             },
-            "description": "Lista pública de centros. Opcionalmente filtra por especialidad.",
+            "description": "Lista paginada de centros (público). `search` filtra por nombre, `especialidadId` por especialidad. Devuelve `content`, `page`, `size`, `totalElements`, `totalPages`.",
             "auth": {
               "type": "noauth"
             }
@@ -998,7 +1009,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "[\n  {\n    \"id\": 1,\n    \"nombre\": \"Posta San Martín\",\n    \"direccion\": \"Av. Los Próceres 123, SJL\",\n    \"latitud\": -12.0219,\n    \"longitud\": -77.005,\n    \"capacidadDiaria\": 40,\n    \"especialidades\": [\n      {\n        \"id\": 1,\n        \"nombre\": \"Medicina General\",\n        \"descripcion\": \"Atención primaria\"\n      }\n    ]\n  }\n]"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Posta San Martín\",\n      \"direccion\": \"Av. Los Próceres 123, SJL\",\n      \"latitud\": -12.0219,\n      \"longitud\": -77.005,\n      \"capacidadDiaria\": 40,\n      \"especialidades\": [\n        {\n          \"id\": 1,\n          \"nombre\": \"Medicina General\",\n          \"descripcion\": \"Atención primaria\"\n        }\n      ]\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"first\": true,\n  \"last\": true\n}"
             }
           ]
         },
@@ -1333,6 +1344,92 @@
               "body": "{\n  \"id\": 1,\n  \"nombre\": \"Posta San Martín\",\n  \"direccion\": \"Av. Los Próceres 123, SJL\",\n  \"latitud\": -12.0219,\n  \"longitud\": -77.005,\n  \"capacidadDiaria\": 40,\n  \"especialidades\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Medicina General\",\n      \"descripcion\": \"Atención primaria\"\n    }\n  ]\n}"
             }
           ]
+        },
+        {
+          "name": "Estadísticas del día",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/centros/{{centroId}}/estadisticas?fecha=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "centros",
+                "{{centroId}}",
+                "estadisticas"
+              ],
+              "query": [
+                {
+                  "key": "fecha",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Resumen del día para el dashboard: turnos por estado, por urgencia y por especialidad, cupos disponibles y espera estimada promedio. `fecha` (yyyy-MM-dd) es opcional; por defecto hoy. ADMINISTRADOR o MEDICO.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Ejemplo 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/centros/{{centroId}}/estadisticas?fecha=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "centros",
+                    "{{centroId}}",
+                    "estadisticas"
+                  ],
+                  "query": [
+                    {
+                      "key": "fecha",
+                      "value": ""
+                    }
+                  ]
+                },
+                "description": "Resumen del día para el dashboard: turnos por estado, por urgencia y por especialidad, cupos disponibles y espera estimada promedio. `fecha` (yyyy-MM-dd) es opcional; por defecto hoy. ADMINISTRADOR o MEDICO.",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"centroId\": 1,\n  \"centro\": \"Centro de Salud Barranco\",\n  \"fecha\": \"2026-11-10\",\n  \"capacidadDiaria\": 60,\n  \"totalTurnos\": 5,\n  \"cuposDisponibles\": 55,\n  \"enEspera\": 4,\n  \"esperaEstimadaPromedioMin\": 23,\n  \"porEstado\": {\n    \"RESERVADO\": 1,\n    \"EN_ESPERA\": 4,\n    \"EN_ATENCION\": 0,\n    \"ATENDIDO\": 0,\n    \"CANCELADO\": 0\n  },\n  \"porUrgencia\": {\n    \"BAJO\": 1,\n    \"MEDIO\": 1,\n    \"ALTO\": 1,\n    \"CRITICO\": 1\n  },\n  \"porEspecialidad\": {\n    \"Medicina General\": 5\n  }\n}"
+            }
+          ]
         }
       ]
     },
@@ -1509,7 +1606,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/medicos?especialidadId=1",
+              "raw": "{{baseUrl}}/api/v1/medicos?page=0&size=10",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1520,13 +1617,16 @@
               ],
               "query": [
                 {
-                  "key": "especialidadId",
-                  "value": "1",
-                  "description": "Opcional"
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
                 }
               ]
             },
-            "description": "Lista de médicos, opcionalmente por especialidad (usuario autenticado).",
+            "description": "Lista de médicos, opcionalmente por especialidad (usuario autenticado). Respuesta paginada (`page`, `size`).",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1564,6 +1664,69 @@
                 {
                   "key": "token",
                   "value": "{{pacienteToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mi perfil de médico",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/medicos/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "medicos",
+                "me"
+              ]
+            },
+            "description": "Datos del médico logueado y sus especialidades (para elegir qué cola atender).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{medicoToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mis pacientes en atención",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/medicos/me/en-atencion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "medicos",
+                "me",
+                "en-atencion"
+              ]
+            },
+            "description": "Turnos que el médico logueado está atendiendo ahora (estado EN_ATENCION).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{medicoToken}}",
                   "type": "string"
                 }
               ]
@@ -1699,7 +1862,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/pacientes",
+              "raw": "{{baseUrl}}/api/v1/pacientes?page=0&size=10",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1707,9 +1870,19 @@
                 "api",
                 "v1",
                 "pacientes"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
               ]
             },
-            "description": "Lista de pacientes (MEDICO o ADMINISTRADOR).",
+            "description": "Lista de pacientes (MEDICO o ADMINISTRADOR). Respuesta paginada (`page`, `size`).",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1846,7 +2019,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/turnos/me",
+              "raw": "{{baseUrl}}/api/v1/turnos/me?page=0&size=10&estado=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1855,9 +2028,23 @@
                 "v1",
                 "turnos",
                 "me"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "estado",
+                  "value": ""
+                }
               ]
             },
-            "description": "Historial de turnos del paciente logueado, del más reciente al más antiguo.",
+            "description": "Historial paginado de turnos del paciente, del más reciente al más antiguo. `estado` es opcional (RESERVADO, EN_ESPERA, EN_ATENCION, ATENDIDO, CANCELADO).",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1907,7 +2094,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "[\n  {\n    \"id\": 1,\n    \"pacienteId\": 1,\n    \"paciente\": \"María Quispe\",\n    \"medico\": null,\n    \"centroId\": 1,\n    \"centro\": \"Posta San Martín\",\n    \"especialidadId\": 1,\n    \"especialidad\": \"Medicina General\",\n    \"fechaHora\": \"2026-10-01T09:30:00\",\n    \"estado\": \"RESERVADO\",\n    \"prioridad\": 0,\n    \"nivelUrgencia\": null\n  }\n]"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"pacienteId\": 1,\n      \"paciente\": \"María Quispe\",\n      \"medico\": null,\n      \"centroId\": 1,\n      \"centro\": \"Posta San Martín\",\n      \"especialidadId\": 1,\n      \"especialidad\": \"Medicina General\",\n      \"fechaHora\": \"2026-10-01T09:30:00\",\n      \"estado\": \"RESERVADO\",\n      \"prioridad\": 0,\n      \"nivelUrgencia\": null\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"first\": true,\n  \"last\": true\n}"
             }
           ]
         },
@@ -1979,6 +2166,64 @@
                 }
               ],
               "body": "{\n  \"id\": 1,\n  \"pacienteId\": 1,\n  \"paciente\": \"María Quispe\",\n  \"medico\": null,\n  \"centroId\": 1,\n  \"centro\": \"Posta San Martín\",\n  \"especialidadId\": 1,\n  \"especialidad\": \"Medicina General\",\n  \"fechaHora\": \"2026-10-01T09:30:00\",\n  \"estado\": \"RESERVADO\",\n  \"prioridad\": 0,\n  \"nivelUrgencia\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Catálogo de síntomas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/triage/sintomas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "triage",
+                "sintomas"
+              ]
+            },
+            "description": "Lista de síntomas que el paciente puede marcar en el triage, con su gravedad de 1 a 4. Público.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "Ejemplo 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/triage/sintomas",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "triage",
+                    "sintomas"
+                  ]
+                },
+                "description": "Lista de síntomas que el paciente puede marcar en el triage, con su gravedad de 1 a 4. Público.",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"codigo\": \"DOLOR_PECHO\",\n    \"etiqueta\": \"Dolor pecho\",\n    \"gravedad\": 4\n  },\n  {\n    \"codigo\": \"FIEBRE\",\n    \"etiqueta\": \"Fiebre\",\n    \"gravedad\": 2\n  },\n  {\n    \"codigo\": \"TOS\",\n    \"etiqueta\": \"Tos\",\n    \"gravedad\": 1\n  }\n]"
             }
           ]
         },
@@ -2184,7 +2429,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"turnoId\": 1,\n  \"posicion\": 2,\n  \"personasAdelante\": 1,\n  \"nivelUrgencia\": \"ALTO\"\n}"
+              "body": "{\n  \"turnoId\": 1,\n  \"posicion\": 2,\n  \"personasAdelante\": 1,\n  \"minutosEstimados\": 15,\n  \"nivelUrgencia\": \"ALTO\"\n}"
             }
           ]
         },
@@ -2418,6 +2663,40 @@
                   "type": "string"
                 }
               ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cola en tiempo real (SSE)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/centros/{{centroId}}/especialidades/{{especialidadId}}/cola/stream?token={{medicoToken}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "centros",
+                "{{centroId}}",
+                "especialidades",
+                "{{especialidadId}}",
+                "cola",
+                "stream"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{medicoToken}}"
+                }
+              ]
+            },
+            "description": "Conexión Server-Sent Events. Envía `conectado` al suscribirse y `cola-actualizada` cada vez que la cola cambia (triage, llamar siguiente, cancelación). Como EventSource no permite headers, el token puede ir en `?token=`.",
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
