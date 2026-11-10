@@ -1,7 +1,10 @@
 /**
- * El access token vive solo en memoria (no se puede leer desde otra pestaña ni
- * persiste en disco). El refresh token se guarda en sessionStorage para
- * sobrevivir a un F5, y se borra al cerrar la pestaña.
+ * El access token vive solo en memoria de JavaScript.
+ * El refresh token se guarda en localStorage para recuperar
+ * la sesión después de recargar o cerrar el navegador.
+ *
+ * Nota: localStorage es accesible desde JavaScript, por lo que 
+ * una futura mejora seria migrar el refresh token a cokkies HttpOnly para reducir su exposicion ante ataques XSS
  */
 const REFRESH_KEY = 'turnoya.refresh';
 
@@ -14,15 +17,15 @@ export const tokenStorage = {
   },
   getRefreshToken: () => {
     try {
-      return sessionStorage.getItem(REFRESH_KEY);
+      return localStorage.getItem(REFRESH_KEY);
     } catch {
       return null;
     }
   },
   setRefreshToken: (token) => {
     try {
-      if (token) sessionStorage.setItem(REFRESH_KEY, token);
-      else sessionStorage.removeItem(REFRESH_KEY);
+      if (token) localStorage.setItem(REFRESH_KEY, token);
+      else localStorage.removeItem(REFRESH_KEY);
     } catch {
       /* almacenamiento no disponible: la sesión dura lo que la pestaña */
     }
@@ -30,7 +33,7 @@ export const tokenStorage = {
   clear: () => {
     accessToken = null;
     try {
-      sessionStorage.removeItem(REFRESH_KEY);
+      localStorage.removeItem(REFRESH_KEY);
     } catch {
       /* nada que limpiar */
     }
