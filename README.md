@@ -308,7 +308,6 @@ Al arrancar se crean automáticamente un administrador y cuatro especialidades b
 | `CORS_ALLOWED_ORIGINS` | Orígenes permitidos del frontend | `http://localhost:5173` y `http://localhost:3000` |
 
 ## Despliegue en AWS
-
 La API está publicada en **http://3.226.53.255:8080** (por ejemplo, `GET /api/v1/especialidades`).
 
 - **EC2:** ejecuta el `.jar` como servicio de `systemd` (se reinicia solo) con una IP elástica fija.

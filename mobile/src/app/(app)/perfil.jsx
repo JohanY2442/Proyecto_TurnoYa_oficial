@@ -16,10 +16,10 @@ const ROL = { PACIENTE: 'Paciente', MEDICO: 'Médico', ADMINISTRADOR: 'Administr
 
 function Dato({ label, value }) {
   return (
-    <View style={{ gap: 2 }}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value || 'No registrado'}</Text>
-    </View>
+      <View style={{ gap: 2 }}>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.value}>{value || 'No registrado'}</Text>
+      </View>
   );
 }
 
@@ -37,12 +37,12 @@ export default function PerfilScreen() {
   useEffect(() => {
     if (!esPaciente) return;
     pacienteService
-      .miPerfil()
-      .then((p) => {
-        setPerfil(p);
-        setTelefono(p.telefono ?? '');
-      })
-      .catch(() => {});
+        .miPerfil()
+        .then((p) => {
+          setPerfil(p);
+          setTelefono(p.telefono ?? '');
+        })
+        .catch(() => {});
   }, [esPaciente]);
 
   const guardar = async () => {
@@ -70,30 +70,30 @@ export default function PerfilScreen() {
   };
 
   const salir = () =>
-    Alert.alert('¿Cerrar sesión?', 'Tendrás que volver a ingresar con tu correo.', [
-      { text: 'Volver', style: 'cancel' },
-      { text: 'Cerrar sesión', style: 'destructive', onPress: logout },
-    ]);
+      Alert.alert('¿Cerrar sesión?', 'Tendrás que volver a ingresar con tu correo.', [
+        { text: 'Volver', style: 'cancel' },
+        { text: 'Cerrar sesión', style: 'destructive', onPress: logout },
+      ]);
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }}>
-      <Card style={{ gap: 14 }}>
-        <Text style={styles.nombre}>{user.nombre}</Text>
-        <Dato label="Correo" value={user.email} />
-        <Dato label="Tipo de cuenta" value={ROL[user.rol]} />
-        {perfil && <Dato label="DNI" value={perfil.dni} />}
-      </Card>
-      {esPaciente && (
-        <Card style={{ gap: 12 }}>
-          <TextField label="Celular" value={telefono} onChangeText={setTelefono} keyboardType="phone-pad" maxLength={9} error={error} placeholder="987654321" />
-          <Button title="Guardar celular" onPress={guardar} loading={guardando} disabled={telefono === (perfil?.telefono ?? '')} />
-          <Button title="Activar avisos de turno" variant="outline" icon="notifications-outline" onPress={activarAvisos} />
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }}>
+        <Card style={{ gap: 14 }}>
+          <Text style={styles.nombre}>{user.nombre}</Text>
+          <Dato label="Correo" value={user.email} />
+          <Dato label="Tipo de cuenta" value={ROL[user.rol]} />
+          {perfil && <Dato label="DNI" value={perfil.dni} />}
         </Card>
-      )}
-      {user.rol === ROLES.ADMIN && <Text style={styles.label}>Las estadísticas y la gestión de centros están en la versión web.</Text>}
-      <Button title="Cerrar sesión" variant="ghost" icon="log-out-outline" onPress={salir} />
-      <Text style={styles.api}>Servidor: {API_URL}</Text>
-    </ScrollView>
+        {esPaciente && (
+            <Card style={{ gap: 12 }}>
+              <TextField label="Celular" value={telefono} onChangeText={setTelefono} keyboardType="phone-pad" maxLength={9} error={error} placeholder="987654321" />
+              <Button title="Guardar celular" onPress={guardar} loading={guardando} disabled={telefono === (perfil?.telefono ?? '')} />
+              <Button title="Activar avisos de turno" variant="outline" icon="notifications-outline" onPress={activarAvisos} />
+            </Card>
+        )}
+        {user.rol === ROLES.ADMIN && <Text style={styles.label}>Las estadísticas y la gestión de centros están en la versión web.</Text>}
+        <Button title="Cerrar sesión" variant="ghost" icon="log-out-outline" onPress={salir} />
+        <Text style={styles.api}>Servidor: {API_URL}</Text>
+      </ScrollView>
   );
 }
 
