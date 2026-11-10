@@ -12,7 +12,7 @@
 | Dervy Pillaca Pullo | Backend & Async Processing |
 | Adrián Jesús Ángel Veliz Quispe | DevOps, Testing & Cloud |
 
-**Deploy:** http://3.226.53.255:8080 (AWS EC2 + Amazon RDS)
+**Deploy:** http://3.147.150.111:8080 (AWS EC2 + Amazon RDS)
 
 ---
 
