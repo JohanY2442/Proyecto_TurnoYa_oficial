@@ -1,36 +1,54 @@
-# TurnoYa: Gestión Inteligente de Turnos y Triage para Postas y Centros de Salud
+# TurnoYa — Gestión Inteligente de Turnos y Triage para Postas y Centros de Salud
 
-**Curso:** CS 2031 Desarrollo Basado en Plataforma (2026-2)
+**Curso:** CS2031 — Desarrollo Basado en Plataformas (UTEC, 2026-2)  
+**Repositorio:** https://github.com/JohanY2442/Proyecto_TurnoYa_oficial  
+**Aplicación web:** https://proyecto-turno-ya-oficial.vercel.app/  
+**Backend:** Spring Boot + PostgreSQL (despliegue en AWS EC2/RDS; ver sección de despliegue)  
+**Aplicación móvil:** React Native + Expo (código en `mobile/`)
 
-**Integrantes:**
+### Equipo activo en la segunda fase
 
-| Integrante | Rol |
+| Integrante | Rol principal |
 |---|---|
-| Leyrin Bridneys Aguilar Jorge | UI/UX & Frontend |
-| Julian Edison Alvarez Cartolin | Fullstack & Integration |
-| Johan Yadir Huayta Enriquez | Backend & Database Architecture |
-| Dervy Pillaca Pullo | Backend & Async Processing |
-| Adrián Jesús Ángel Veliz Quispe | DevOps, Testing & Cloud |
+| **Julian Edison Alvarez Cartolin** | Desarrollo fullstack e integración |
+| **Johan Yadir Huayta Enriquez** | Backend y arquitectura de base de datos |
 
-**Deploy:** http://3.147.150.111:8080 (AWS EC2 + Amazon RDS)
+El equipo inicial contaba con cinco integrantes. Tres se retiraron durante el proyecto y **Julián y Yadir continuaron hasta la segunda entrega**. Los aportes y porcentajes de participación de ambos se detallan en [Coevaluación](#coevaluación-de-integrantes--parte-2).
+
+<details>
+<summary>Integrantes del equipo original (primera fase)</summary>
+
+| Integrante | Rol registrado originalmente | Situación en la fase 2 |
+|---|---|---|
+| Leyrin Bridneys Aguilar Jorge | UI/UX y frontend | Retirado/a |
+| Julian Edison Alvarez Cartolin | Fullstack e integración | Activo |
+| Johan Yadir Huayta Enriquez | Backend y arquitectura de base de datos | Activo |
+| Dervy Pillaca Pullo | Backend y procesamiento asíncrono | Retirado |
+| Adrián Jesús Ángel Veliz Quispe | DevOps, pruebas y cloud | Retirado |
+
+Los roles originales se mantienen como antecedente histórico; **no representan la coevaluación de la segunda fase**.
+
+</details>
 
 ---
-
 ## Índice
 
 1. [Introducción](#introducción)
 2. [Identificación del problema](#identificación-del-problema)
 3. [Descripción de la solución](#descripción-de-la-solución)
 4. [Arquitectura y decisiones de diseño](#arquitectura-y-decisiones-de-diseño)
-5. [Modelo de entidades](#modelo-de-entidades)
-6. [Manejo de errores](#manejo-de-errores)
-7. [Medidas de seguridad](#medidas-de-seguridad)
-8. [Eventos y asincronía](#eventos-y-asincronía)
-9. [GitHub y gestión del proyecto](#github-y-gestión-del-proyecto)
-10. [Ejecución local](#ejecución-local)
-11. [Despliegue en AWS](#despliegue-en-aws)
-12. [Conclusión](#conclusión)
-13. [Apéndices](#apéndices)
+5. [Frontend web (React)](#frontend-web-react)
+6. [Aplicación móvil (React Native y Expo)](#aplicación-móvil-react-native-y-expo)
+7. [Modelo de entidades](#modelo-de-entidades)
+8. [Manejo de errores](#manejo-de-errores)
+9. [Medidas de seguridad](#medidas-de-seguridad)
+10. [Eventos y asincronía](#eventos-y-asincronía)
+11. [GitHub y gestión del proyecto](#github-y-gestión-del-proyecto)
+12. [Ejecución local](#ejecución-local)
+13. [Despliegue y verificación](#despliegue-y-verificación)
+14. [Coevaluación de integrantes — Parte 2](#coevaluación-de-integrantes--parte-2)
+15. [Conclusión](#conclusión)
+16. [Apéndices](#apéndices)
 
 ---
 
@@ -78,19 +96,19 @@ El nivel de urgencia se calcula con el síntoma más grave (de 1 a 4). Si el pac
 
 | Área | Tecnología |
 |---|---|
-| Lenguaje | Java 21 |
-| Framework | Spring Boot 4.1.1 (Web MVC, Data JPA, Validation, Mail, Thymeleaf) |
-| Seguridad | Spring Security 7, JJWT 0.12.6, BCrypt |
-| Persistencia | Hibernate 7, PostgreSQL (producción), H2 en memoria (tests) |
-| Utilidades | Lombok, Maven Wrapper |
-| Pruebas | JUnit 5, Spring Boot Test |
-| Herramientas | Git, GitHub, GitHub Actions, Postman, IntelliJ IDEA |
-| Despliegue | AWS EC2 (Amazon Linux 2023) y Amazon RDS for PostgreSQL |
-| Servicio externo | Servidor SMTP para correos (por ejemplo, Gmail) |
+| Backend | Java 21, Spring Boot 4.1.1, Spring Security, Spring Data JPA, JWT |
+| Base de datos | PostgreSQL (producción), H2 (pruebas) |
+| Frontend web | React 19, Vite, React Router, axios, Tailwind CSS 4 |
+| Bibliotecas web | React Hook Form, Recharts, React Leaflet, OpenStreetMap, react-hot-toast, qrcode.react |
+| Aplicación móvil | React Native, Expo SDK 58, Expo Router, axios |
+| Funciones móviles | Expo Location, Expo Camera, Expo SecureStore, Expo Notifications, React Native Maps |
+| Pruebas y utilidades | Maven Wrapper, JUnit 5, Spring Boot Test, GitHub Actions, Postman |
+| Despliegue documentado | Vercel (web), AWS EC2 (API), Amazon RDS (PostgreSQL) |
+| Correo | SMTP y plantillas Thymeleaf |
 
 ### Endpoints principales
 
-Todas las rutas usan el prefijo `/api/v1`. La colección `postman_collection.json` en la raíz documenta los 37 requests con ejemplos de respuesta.
+Las rutas del backend usan el prefijo `/api/v1`. La colección `postman_collection.json` en la raíz contiene ejemplos de peticiones para probar la API.
 
 | Método y ruta | Rol |
 |---|---|
@@ -112,7 +130,7 @@ Todas las rutas usan el prefijo `/api/v1`. La colección `postman_collection.jso
 
 ```mermaid
 flowchart LR
-    Cliente["Cliente (frontend / Postman)"] -->|"HTTP + JWT"| Filtro["JwtAuthenticationFilter"]
+    Cliente["React Web / React Native / Postman"] -->|"API REST + JWT"| Filtro["JwtAuthenticationFilter"]
     Filtro --> Controller["Controllers /api/v1"]
     Controller -->|"DTOs"| Service["Services"]
     Service --> Mapper["Mappers"]
@@ -135,6 +153,94 @@ La API sigue una arquitectura en capas: el filtro JWT identifica al usuario, el 
 - **Síntomas como enum con gravedad:** la regla de urgencia vive en una sola clase (`CalculadoraUrgencia`), fácil de probar y ajustar.
 - **JWT con refresh token:** sin sesiones en el servidor, la API puede escalar; el access token corto limita el daño si se filtra.
 - **Nombres del dominio en español:** entidades y reglas usan los términos del personal de salud peruano (turno, triage, colegiatura); los elementos técnicos siguen las convenciones de Spring en inglés (`Controller`, `Service`, `Repository`, `Exception`).
+
+## Frontend web (React)
+
+**Código:** [`web/`](web/)  
+**URL pública:** https://proyecto-turno-ya-oficial.vercel.app/
+
+La aplicación web está desarrollada con **React 19 y Vite**, utiliza **React Router** para navegación y consume la API REST del proyecto mediante un cliente centralizado de **axios**. El equipo comprobó el funcionamiento de la aplicación web antes de la entrega.
+
+### Funcionalidades y vistas
+
+| Vista o módulo | Funcionalidad |
+|---|---|
+| Página de inicio | Presenta TurnoYa y da acceso a la búsqueda de centros y autenticación. |
+| Registro e inicio de sesión | Autenticación de usuarios y acceso según rol. |
+| Centros de salud | Búsqueda, filtros, ubicación en mapa y detalle del centro. |
+| Pacientes | Panel principal, reserva de turnos, triage, consulta de posición y detalle del turno. |
+| Médicos | Panel para consultar la cola y gestionar la atención. |
+| Administradores | Panel y mantenimiento de centros, especialidades y personas. |
+| Perfil | Consulta de información del usuario autenticado. |
+| Navegación | Rutas protegidas por rol, páginas de error y ruta 404. |
+
+### Organización, integración y experiencia de usuario
+
+- **`src/routes/router.jsx`:** navegación centralizada, rutas dinámicas (`/centros/:id`, `/turnos/:id`), páginas cargadas con `React.lazy` y rutas protegidas.
+- **`src/services/`:** cliente axios único e integración de autenticación, centros, turnos, triage, cola y otros recursos de la API.
+- **`src/contexts/` y `src/hooks/`:** estado de sesión y tema visual; hooks de datos, geolocalización, paginación y cola en vivo.
+- **`src/components/` y `src/pages/`:** componentes reutilizables, formularios, tablas, mapas, paneles y páginas por rol.
+- **Paginación y filtros:** controles en las listas; parámetros de búsqueda, página y tamaño conservados en la URL cuando corresponde.
+- **Estados de interfaz:** validación de formularios, avisos de éxito/error, indicadores de carga, confirmaciones y estados vacíos.
+- **Cola en vivo:** Server-Sent Events (SSE) con consulta periódica como respaldo si falla la conexión.
+- **Interfaz visual:** Tailwind CSS, diseño adaptable, iconos, componentes de uso común y tema claro/oscuro.
+
+La aplicación web utiliza **React Leaflet con OpenStreetMap** para visualizar centros. Las peticiones al backend se configuran con `VITE_API_URL` y los tokens se gestionan mediante los servicios de autenticación del frontend.
+
+## Aplicación móvil (React Native y Expo)
+
+**Código:** [`mobile/`](mobile/)  
+**Tecnología:** React Native con Expo SDK 58 y Expo Router.
+
+La aplicación móvil consume el mismo backend del proyecto y contempla flujos para pacientes y médicos. El equipo realizó pruebas funcionales de la app móvil durante el desarrollo. No se incluye aquí una URL de Expo, EAS Update o APK porque no se ha proporcionado un enlace público verificable.
+
+### Funcionalidades móviles
+
+| Módulo | Funcionalidad |
+|---|---|
+| Autenticación | Registro e inicio de sesión con JWT. |
+| Inicio | Centros de salud, búsqueda, mapa y turno activo del paciente. |
+| Centros | Consulta de detalles y reserva de turnos. |
+| Turnos y triage | Consulta de turnos, registro de síntomas y seguimiento de la atención. |
+| Médico | Lectura del código QR del ticket para acceder al turno. |
+| Perfil | Consulta y gestión del perfil del usuario. |
+| Notificaciones | Avisos locales relacionados con la proximidad del turno. |
+
+### Sensores, mapas y permisos
+
+- **GPS (`expo-location`):** obtiene la ubicación del dispositivo para mostrar centros cercanos. Si se niega el permiso o no hay señal, muestra un mensaje y permite ver el listado general.
+- **Cámara (`expo-camera`):** permite al médico escanear el QR del ticket. Si no se puede usar, el código del turno puede introducirse manualmente.
+- **Mapas (`react-native-maps`):** representa los centros en el mapa (Google Maps en Android y Apple Maps en iOS).
+- **Notificaciones (`expo-notifications`):** avisa al usuario mediante notificaciones locales cuando su turno se aproxima.
+- **Sesión:** los tokens se guardan con `expo-secure-store` en dispositivos nativos.
+
+### Organización de `mobile/src/`
+
+```text
+src/
+├── app/          # Pantallas y rutas de Expo Router
+├── components/   # Componentes reutilizables y estados de UI
+├── contexts/     # AuthContext
+├── hooks/        # Autenticación, datos, ubicación, notificaciones y conexión
+├── services/     # API REST, interceptores y almacenamiento de tokens
+├── theme/        # Estilos y colores
+└── utils/        # Constantes, formateo y mensajes de error
+```
+
+### Arquitectura del proyecto completo
+
+```text
+Proyecto_TurnoYa_oficial/
+├── README.md                 # Documentación general y coevaluación (este archivo)
+├── src/                      # Backend Spring Boot (Java)
+├── pom.xml                   # Dependencias del backend (Maven)
+├── mvnw / mvnw.cmd           # Maven Wrapper
+├── postman_collection.json   # Colección para probar la API
+├── web/                      # Frontend React + Vite
+└── mobile/                   # Aplicación React Native + Expo
+```
+
+El backend se encuentra en la **raíz del repositorio**, no en una carpeta llamada `backend/`. Los directorios `web/` y `mobile/` tienen sus propios archivos `README.md` con detalles de cada cliente.
 
 ## Modelo de entidades
 
@@ -280,46 +386,115 @@ Los listeners usan `@TransactionalEventListener(phase = AFTER_COMMIT)`, así que
 
 - **Flujo de ramas:** cada integrante trabajó en una rama `feature/<nombre>-<tema>` y abrió un Pull Request hacia `master`. La rama `master` está protegida: no acepta *push* directo y requiere la aprobación de otro integrante.
 - **Mensajes de commit descriptivos**, en su mayoría con el formato *Conventional Commits* (`feat`, `docs`, `build`).
-- **Gestión de tareas:** el equipo dividió el trabajo en un plan por fases. Cada integrante tuvo asignado un módulo (seguridad, catálogo, turnos y triage, eventos, Postman, documentación y despliegue), que desarrolló en su propia rama y entregó mediante un Pull Request. La fecha límite común fue la entrega de la Semana 7 (25 de septiembre de 2026).
+- **Gestión de tareas:** el equipo dividió el trabajo en un plan por fases. Cada integrante tuvo asignado un módulo (seguridad, catálogo, turnos y triage, eventos, Postman, documentación y despliegue), que desarrolló en su propia rama y entregó mediante un Pull Request. La planificación original correspondió a la primera fase del curso (Semana 7). En la segunda fase continuaron los dos integrantes activos indicados al inicio de este archivo.
 - **GitHub Actions:** el flujo `.github/workflows/ci.yml` se ejecuta en cada *push* y en cada Pull Request hacia `master`. Instala Java 21, compila el proyecto y corre los tests; si algo falla, el PR queda marcado en rojo antes de fusionarse.
 
 ## Ejecución local
 
-**Requisitos:** Java 21 o superior y PostgreSQL con una base de datos llamada `turnoya`.
+### Requisitos
+
+- **Java 21** y PostgreSQL para el backend.
+- **Node.js y npm** compatibles con las versiones del proyecto para web y móvil.
+- **Expo Go o emulador compatible** para probar la app móvil (según el SDK configurado).
+
+### 1. Clonar el repositorio y ejecutar el backend
 
 ```bash
-git clone https://github.com/pikachu-programador/backend_TurnoYa_oficial.git
-cd backend_TurnoYa_oficial
-./mvnw spring-boot:run   # levanta la API en http://localhost:8080
-./mvnw clean test        # corre los tests con H2 en memoria
+git clone https://github.com/JohanY2442/Proyecto_TurnoYa_oficial.git
+cd Proyecto_TurnoYa_oficial
+
+# Configurar PostgreSQL y las variables de entorno necesarias.
+./mvnw spring-boot:run
+
+# Para ejecutar las pruebas:
+./mvnw clean test
 ```
 
-En Windows se usa `.\mvnw.cmd` en lugar de `./mvnw`.
+En Windows, usar `mvnw.cmd` en lugar de `./mvnw`. La API corre localmente en `http://localhost:8080`; los endpoints empiezan con `/api/v1`.
 
-Al arrancar se crean automáticamente un administrador y cuatro especialidades base.
+**Variables del backend:** `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `MAIL_USERNAME`, `MAIL_PASSWORD` y `CORS_ALLOWED_ORIGINS`, entre otras. Se configuran en el entorno de ejecución. **No publicar secretos reales ni usar los valores de desarrollo en producción.**
 
-| Variable de entorno | Uso | Valor por defecto |
+### 2. Ejecutar el frontend web
+
+Desde la raíz del repositorio:
+
+```bash
+cd web
+npm install
+# Crear un archivo .env a partir de .env.example y ajustar VITE_API_URL.
+npm run dev
+```
+
+La URL local de Vite es habitualmente `http://localhost:5173`. Para crear la versión de producción: `npm run build` (salida en `web/dist/`).
+
+Ejemplo de `web/.env` para desarrollo local:
+
+```dotenv
+VITE_API_URL=http://localhost:8080/api/v1
+```
+
+### 3. Ejecutar la aplicación móvil
+
+Desde la raíz del repositorio:
+
+```bash
+cd mobile
+npm install
+# Crear un archivo .env a partir de .env.example.
+npx expo start
+```
+
+Ejemplo de `mobile/.env` (sustituir por la IP de la computadora en la red local):
+
+```dotenv
+EXPO_PUBLIC_API_URL=http://192.168.1.20:8080/api/v1
+```
+
+En un **celular físico**, `localhost` apunta al propio teléfono. Usar la IP accesible del backend en la red local o la URL de su despliegue. El proyecto contiene `mobile/eas.json` con perfiles de compilación para Expo Application Services (EAS).
+
+## Despliegue y verificación
+
+| Componente | Plataforma / estado documentado | Acceso |
 |---|---|---|
-| `DB_HOST`, `DB_PORT`, `DB_NAME` | Conexión a PostgreSQL | `localhost`, `5432`, `turnoya` |
-| `DB_USERNAME`, `DB_PASSWORD` | Credenciales de la base de datos | `postgres` |
-| `JWT_SECRET` | Clave de firma JWT (mínimo 32 caracteres) | Clave de desarrollo |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Administrador inicial | `admin@turnoya.com` |
-| `MAIL_USERNAME`, `MAIL_PASSWORD` | Cuenta SMTP para correos | Vacío |
-| `CORS_ALLOWED_ORIGINS` | Orígenes permitidos del frontend | `http://localhost:5173` y `http://localhost:3000` |
+| Frontend web | Vercel | https://proyecto-turno-ya-oficial.vercel.app/ |
+| Backend REST | AWS EC2; API Java/Spring Boot | `http://3.147.150.111:8080/api/v1` (dirección configurada en `web/vercel.json`; comprobar disponibilidad actual) |
+| Base de datos | Amazon RDS for PostgreSQL | Privada; no se publican credenciales |
+| Aplicación móvil | React Native + Expo; probada por el equipo | Código en `mobile/`; enlace público de Expo/APK no consignado |
 
-## Despliegue en AWS
-La API está publicada en **http://3.226.53.255:8080** (por ejemplo, `GET /api/v1/especialidades`).
+### Integración del despliegue
 
-- **EC2:** ejecuta el `.jar` como servicio de `systemd` (se reinicia solo) con una IP elástica fija.
-- **Amazon RDS (PostgreSQL):** sin acceso público.
-- **Security groups:** EC2 abre solo los puertos 22 y 8080; RDS acepta el puerto 5432 únicamente desde EC2.
-- **Variables de entorno:** las credenciales, la clave JWT y la contraseña del administrador están en un archivo protegido del servidor, fuera del repositorio.
+- El frontend web se distribuye desde Vercel y se conecta a los endpoints de la API REST.
+- En el archivo `web/vercel.json` del proyecto se define una reescritura de `/api/v1/*` al backend configurado en AWS EC2.
+- El backend utiliza PostgreSQL alojado en Amazon RDS.
+- En producción deben configurarse correctamente las variables de entorno, los orígenes CORS y las credenciales fuera del repositorio.
+- La web fue abierta y probada por el equipo antes de la entrega. Las pruebas anteriores de la app móvil también fueron satisfactorias; la disponibilidad puede variar con los servicios desplegados.
+
+**Nota sobre las direcciones IP:** la documentación original incluía dos direcciones de EC2 distintas. Se toma como referencia la que figura en la configuración de Vercel del ZIP (`3.147.150.111`). Antes de exponer, verificar si la IP y los servicios siguen operativos.
+
+### Flujo recomendado para demostrar TurnoYa
+
+1. Abrir la web, buscar un centro y revisar su información.
+2. Iniciar sesión con un usuario de prueba (sin publicar sus credenciales en este README).
+3. Reservar un turno, registrar síntomas y consultar su estado o posición.
+4. Mostrar la vista del médico y el flujo de atención del turno.
+5. En móvil, mostrar los centros cercanos con GPS y, con una cuenta médica, probar el escaneo del QR.
+
+## Coevaluación de integrantes — Parte 2
+
+La participación se evalúa **individualmente**: un 100 % representa el cumplimiento completo de las responsabilidades de esa persona y **no se reparte** entre los miembros del grupo.
+
+| Integrante | Principales aportes | Participación individual |
+|---|---|---:|
+| **Julian Edison Alvarez Cartolin** | Desarrollo fullstack, integración entre componentes, pruebas funcionales de la web y la aplicación móvil durante la preparación de la segunda entrega. | **100 %** |
+| **Johan Yadir Huayta Enriquez** | Desarrollo de backend y arquitectura de datos, colaboración en la integración del sistema, pruebas funcionales y preparación de la entrega final. | **100 %** |
+
+**Observación:** el grupo inicialmente contó con cinco integrantes. Los otros tres integrantes se retiraron antes de finalizar la segunda fase; Julián y Yadir continuaron participando hasta la entrega final. Los porcentajes anteriores corresponden al cumplimiento de las responsabilidades de **cada integrante activo**. Los roles originales se conservan al inicio del documento únicamente como referencia histórica.
 
 ## Conclusión
 
 ### Logros
 
-TurnoYa cubre el flujo completo de una atención: registro, búsqueda del centro, reserva con control de cupos, triage con cálculo de urgencia, cola por prioridad y notificaciones por correo, todo protegido con JWT y roles.
+TurnoYa integra backend REST, aplicación web y aplicación móvil para cubrir el flujo de atención: registro, búsqueda de centros, reserva con control de cupos, triage con cálculo de urgencia, consulta de la cola por prioridad y notificaciones. Los flujos de acceso se diferencian por rol de paciente, médico y administrador.
 
 ### Aprendizajes clave
 
@@ -330,10 +505,10 @@ TurnoYa cubre el flujo completo de una atención: registro, búsqueda del centro
 
 ### Trabajo futuro
 
-- Actualizar la cola en tiempo real con WebSockets.
-- Integrar Google Maps y notificaciones SMS o push.
-- Estimar el tiempo de espera y generar estadísticas por establecimiento.
-- Agregar paginación, documentación Swagger/OpenAPI y más pruebas de integración.
+- Evaluar WebSockets para flujos que requieran comunicación bidireccional; actualmente se emplea SSE con respaldo de consultas periódicas en la web.
+- Ampliar canales de notificación, por ejemplo SMS o push remotas.
+- Profundizar en métricas de tiempos de atención y estadísticas por establecimiento.
+- Completar documentación Swagger/OpenAPI, ampliar las pruebas de integración y fortalecer la observabilidad del despliegue.
 
 ## Apéndices
 
